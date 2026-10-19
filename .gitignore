@@ -1,0 +1,9 @@
+# Arquivos gerados pelo Maven
+target/
+
+# Configurações locais do VS Code
+.vscode/
+
+# Arquivos de sistema do Windows
+Thumbs.db
+Desktop.ini
