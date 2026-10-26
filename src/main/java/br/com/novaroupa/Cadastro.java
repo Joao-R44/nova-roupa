@@ -1,43 +1,62 @@
 package br.com.novaroupa;
 
-import java.util.Scanner;
-
 public class Cadastro {
     private String nome;
     private String senha;
     private String email;
     private String cnpj;
-    private String opcao;
 
-    public void cadastrarUser(Scanner scanner) {
-        System.out.println("Registre seu nome:");
-        nome=scanner.nextLine();
+    public void cadastrarUsuario(String nome, String senha, String email) {
+        this.nome= nome;
+        this.senha=senha;
+        this.email=email;
+    }
 
-        System.out.println("Registre sua senha:");
-        senha=scanner.nextLine();
+    public void cadastrarVendedor(String cnpj){
+        this.cnpj=cnpj;
+    }
 
-        System.out.println("Registre seu email:");
-        email=scanner.nextLine();
+    public String getNome(){
+        return this.nome;
+    }
 
-        System.out.printf("Olá "+nome+", seja bem vindo. Você gostaria de se cadastrar como vendedor também?");
-        opcao=scanner.nextLine();
-        
-        while(!opcao.equalsIgnoreCase("Sim")&&!opcao.equalsIgnoreCase("Não")&&!opcao.equalsIgnoreCase("Nao")){
-            System.out.println("Por favor, digite apenas Sim ou Não:");
-            opcao=scanner.nextLine();
+    public String getEmail(){
+        return this.email;
+    }
+
+    public String getSenha(){
+        return this.senha;
+    }
+
+    public String getCnpj(){
+        return this.cnpj;
+    }
+
+    public boolean vEmail(String email){
+        if(this.email.equals(email)){
+            return true;
         }
-
-        if(opcao.equalsIgnoreCase("Não")||opcao.equalsIgnoreCase("Nao")){
-            System.out.println("Entendido, obrigado.");
-        }
-
-        else if(opcao.equalsIgnoreCase("Sim")){
-            cadastrarVendedor(scanner);
+        else{
+            return false;
         }
     }
 
-    public void cadastrarVendedor(Scanner scanner){
-        System.out.println("Registre seu CNPJ:");
-        cnpj=scanner.nextLine();
+    public boolean vSenha(String senha){
+        if(this.senha.equals(senha)){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
+
+    public boolean vCnpj(String cnpj){
+        if(this.cnpj.equals(cnpj)){
+            return true;
+        }
+
+        else{
+            return false;
+        }
     }
 }
