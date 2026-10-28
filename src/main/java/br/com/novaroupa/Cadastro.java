@@ -32,6 +32,14 @@ public class Cadastro {
         return this.cnpj;
     }
 
+    public boolean vNome(String nome){
+        if(this.nome.equals(nome)){
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean vEmail(String email){
         if(this.email.equals(email)){
             return true;
