@@ -15,3 +15,11 @@ spring:
 
 server:
   port: 8080
+
+app:
+  ldap:
+    url: ${LDAP_URL:ldap://localhost:389}
+    base: ${LDAP_BASE:dc=example,dc=org}
+    user-dn-pattern: ${LDAP_USER_DN_PATTERN:uid={0},ou=people}
+    group-search-base: ${LDAP_GROUP_SEARCH_BASE:ou=groups}
+    group-search-filter: ${LDAP_GROUP_SEARCH_FILTER:(member={0})}
