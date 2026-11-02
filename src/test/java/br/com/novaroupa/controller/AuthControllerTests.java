@@ -1,5 +1,8 @@
 package br.com.novaroupa.controller;
 
+import br.com.novaroupa.model.TipoPerfil;
+import br.com.novaroupa.model.Usuario;
+import br.com.novaroupa.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,6 +27,9 @@ class AuthControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Test
     void loginReturnsJwtWithRoleAndTokenAuthorizesProtectedPaths() throws Exception {
@@ -38,6 +45,12 @@ class AuthControllerTests {
                 .andExpect(jsonPath("$.token").isNotEmpty())
                 .andExpect(jsonPath("$.expiresIn").value(3_600_000))
                 .andReturn();
+
+        Usuario perfil = usuarioRepository.findByUsername("vendedor").orElseThrow();
+        assertThat(perfil.getTipoPerfil()).isEqualTo(TipoPerfil.VENDEDOR);
+        assertThat(perfil.getReputacaoMedia()).isEqualTo(0.0);
+        assertThat(perfil.getTotalAvaliacoes()).isZero();
+        assertThat(perfil.getDataCadastro()).isNotNull();
 
         String token = com.jayway.jsonpath.JsonPath.read(result.getResponse().getContentAsString(), "$.token");
         // A rota de teste não existe: 404 confirma que o filtro aceitou o JWT antes do controller.
