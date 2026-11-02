@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: nova-roupa-api
+  profiles:
+    # O profile dev ativa usuários mock somente para desenvolvimento local.
+    default: dev
+  datasource:
+    url: jdbc:sqlite:extensao.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+server:
+  port: 8080
