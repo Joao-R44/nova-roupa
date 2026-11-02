@@ -14,10 +14,12 @@
         <relativePath/>
     </parent>
 
-    <groupId>br.com.roupanova</groupId>
-    <artifactId>roupa-nova-cod</artifactId>
+    <!-- Identificação do projeto -->
+    <groupId>br.com.novaroupa</groupId>
+    <artifactId>nova-roupa-cod</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Propriedades -->
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
@@ -25,40 +27,39 @@
         <jjwt.version>0.12.6</jjwt.version>
     </properties>
 
+    <!-- Dependências -->
     <dependencies>
 
-        <!-- Spring Boot: aplicação web -->
+        <!-- Aplicação web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Spring Security: autenticação e autorização -->
+        <!-- Segurança e autenticação -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-<!-- Integração entre Spring Security e LDAP -->
+        <!-- Integração com LDAP -->
         <dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-ldap</artifactId>
-</dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-ldap</artifactId>
+        </dependency>
 
-        <!-- Spring LDAP: integração com diretório LDAP -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-ldap</artifactId>
         </dependency>
 
-        <!-- JWT: API -->
+        <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
 
-        <!-- JWT: implementação -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
@@ -66,7 +67,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JWT: integração com Jackson -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
@@ -83,20 +83,22 @@
 
     </dependencies>
 
+    <!-- Plugins -->
     <build>
         <plugins>
 
-            <!-- Compilação e execução do Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Execução de classes Java pelo Maven -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
+                <configuration>
+                    <mainClass>br.com.novaroupa.Main</mainClass>
+                </configuration>
             </plugin>
 
         </plugins>
