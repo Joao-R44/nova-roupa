@@ -18,24 +18,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                            JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/**", "/actuator/health", "/v3/api-docs/**", "/swagger-ui/**")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/lotes", "/api/lotes/**").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+ @Bean
+ SecurityFilterChain securityFilterChain(HttpSecurity http,
+ JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+ return http
+ .csrf(csrf -> csrf.disable())
+ .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+ .authorizeHttpRequests(auth -> auth
+ .requestMatchers("/api/auth/login", "/api/auth/**", "/actuator/health", "/v3/api-docs/**", "/swagger-ui/**")
+ .permitAll()
+ .requestMatchers(HttpMethod.GET, "/api/lotes").permitAll()
+ .anyRequest().authenticated())
+ .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+ .build();
+ }
 
-    @Bean
-    AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration)
-            throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+ @Bean
+ AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration)
+ throws Exception {
+ return configuration.getAuthenticationManager();
+ }
 }
