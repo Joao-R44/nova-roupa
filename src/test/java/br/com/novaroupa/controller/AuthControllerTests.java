@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,6 +68,33 @@ class AuthControllerTests {
                                 """))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("Credenciais inválidas"));
+    }
+
+    @Test
+    void loginRateLimitReturnsTooManyRequestsAfterFiveAttemptsFromSameOrigin() throws Exception {
+        RequestPostProcessor origin = request -> {
+            request.setRemoteAddr("198.51.100.40");
+            return request;
+        };
+
+        for (int attempt = 0; attempt < 5; attempt++) {
+            mockMvc.perform(post("/api/auth/login").with(origin)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"username":"vendedor","password":"incorreta"}
+                                    """))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        mockMvc.perform(post("/api/auth/login").with(origin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"vendedor","password":"incorreta"}
+                                """))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.message").value(
+                        "Muitas tentativas de login. Tente novamente mais tarde."))
+                .andExpect(result -> assertThat(result.getResponse().getHeader("Retry-After")).isNotBlank());
     }
 
     @Test
