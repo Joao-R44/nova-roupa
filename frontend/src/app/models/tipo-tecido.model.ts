@@ -1,0 +1,7 @@
+export enum TipoTecido {
+  ALGODAO = 'ALGODAO',
+  JEANS = 'JEANS',
+  POLIESTER = 'POLIESTER',
+  VISCOSE = 'VISCOSE',
+  RETALHOS_MISTOS = 'RETALHOS_MISTOS'
+}
