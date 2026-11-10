@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -79,13 +80,32 @@ class LoteRetalhoControllerTests {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void pesoNaoPositivoRetornaBadRequest() throws Exception {
+        String token = obterToken("vendedor", "vendedor-demo-123");
+
+        mockMvc.perform(post("/api/lotes")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(corpoValido().replace("4.5", "0")))
+                .andExpect(status().isBadRequest());
+    }
+
     private String obterToken(String usuario, String senha) throws Exception {
         MvcResult resultado = mockMvc.perform(post("/api/auth/login")
+                        .with(enderecoDeTeste())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + usuario + "\",\"password\":\"" + senha + "\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
         return JsonPath.read(resultado.getResponse().getContentAsString(), "$.token");
+    }
+
+    private RequestPostProcessor enderecoDeTeste() {
+        return request -> {
+            request.setRemoteAddr("198.51.100.41");
+            return request;
+        };
     }
 
     private String corpoValido() {

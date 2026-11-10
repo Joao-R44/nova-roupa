@@ -99,6 +99,25 @@ class LoteConsultaControllerTests {
                 .andExpect(jsonPath("$.content[0].dataPublicacao").exists());
     }
 
+    @Test
+    void rejeitaIntervaloDePesoInvertido() throws Exception {
+        mockMvc.perform(get("/api/lotes").param("pesoMin", "20").param("pesoMax", "10"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void rejeitaTamanhoDePaginaAcimaDoLimite() throws Exception {
+        mockMvc.perform(get("/api/lotes").param("size", "101"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void rejeitaNumeroDePaginaNegativo() throws Exception {
+        mockMvc.perform(get("/api/lotes").param("page", "-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Parâmetros da requisição inválidos"));
+    }
+
     private LoteRetalho salvar(TipoTecido tipo, String cor, double peso,
                                String localizacao, StatusLote status, LocalDateTime publicadaEm) {
         LoteRetalho lote = new LoteRetalho(vendedor, tipo, peso, cor, localizacao);
