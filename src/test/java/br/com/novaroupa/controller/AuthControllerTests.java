@@ -16,7 +16,9 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,5 +107,42 @@ class AuthControllerTests {
                                 {"username":" ","password":""}
                                 """))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void corsAllowsConfiguredLocalFrontendOrigin() throws Exception {
+        mockMvc.perform(options("/api/lotes")
+                        .header("Origin", "http://localhost:4200")
+                        .header("Access-Control-Request-Method", "GET")
+                        .header("Access-Control-Request-Headers", "authorization,content-type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:4200"));
+    }
+
+    @Test
+    void corsRejectsOriginNotInAllowlist() throws Exception {
+        mockMvc.perform(options("/api/lotes")
+                        .header("Origin", "https://untrusted.example")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void openApiSpecificationIsPublicAndContainsProjectMetadata() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.info.title").value("Nova Roupa API"))
+                .andExpect(jsonPath("$.info.version").value("0.1.0"));
+    }
+
+    @Test
+    void actuatorHealthAndProbesArePublicButInfoRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+        mockMvc.perform(get("/actuator/health/liveness"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/actuator/info"))
+                .andExpect(status().isForbidden());
     }
 }
