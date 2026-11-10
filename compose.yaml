@@ -1,0 +1,25 @@
+services:
+  nova-roupa-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nova-roupa-api:local
+    ports:
+      - "127.0.0.1:${SERVER_PORT:-8080}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      DATABASE_URL: jdbc:sqlite:/data/nova-roupa.db
+      SERVER_PORT: "8080"
+      JWT_SECRET: ${JWT_SECRET:-}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+      LDAP_URL: ${LDAP_URL:-ldap://localhost:389}
+      LDAP_BASE: ${LDAP_BASE:-dc=example,dc=org}
+      LDAP_USER_DN_PATTERN: ${LDAP_USER_DN_PATTERN:-uid={0},ou=people}
+      LDAP_GROUP_SEARCH_BASE: ${LDAP_GROUP_SEARCH_BASE:-ou=groups}
+      LDAP_GROUP_SEARCH_FILTER: ${LDAP_GROUP_SEARCH_FILTER:-(member={0})}
+    volumes:
+      - nova-roupa-data:/data
+    restart: unless-stopped
+
+volumes:
+  nova-roupa-data:

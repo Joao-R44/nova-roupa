@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.env.*
+target/
+node_modules/
+**/node_modules/
+.vscode/
+.idea/
+extensao.db
+*.db
+*.log
